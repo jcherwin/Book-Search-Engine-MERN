@@ -11,12 +11,22 @@ import {
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 //import { getMe, deleteBook } from '../utils/API';
+import { GET_ME } from '../utils/queries';
+import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
     const [userData, setUserData] = useState({});
 
     // use this to determine if `useEffect()` hook needs to run again
     const userDataLength = Object.keys(userData).length;
+
+    const { loading, data } = useQuery(GET_ME);
+    setUserData(data);
+
+    console.log("userData var");
+    console.log(userData);
+
+    const [ removeBook ] = useMutation(REMOVE_BOOK);    
 
     /* REST CODE */
     // useEffect(() => {
@@ -53,16 +63,23 @@ const SavedBooks = () => {
         }
 
         try {
-            const response = await deleteBook(bookId, token);
+            /* REST CODE */
+            // const response = await deleteBook(bookId, token);
+            // if (!response.ok) {
+            //     throw new Error('something went wrong!');
+            // }
+            // const updatedUser = await response.json();
 
-            if (!response.ok) {
-                throw new Error('something went wrong!');
-            }
+            const { data } = await removeBook(bookId);
 
-            const updatedUser = await response.json();
-            setUserData(updatedUser);
+            console.log("removeBook data");
+            console.log(data);
+
+            //const updatedUser = data;
+
+            //setUserData(updatedUser);
             // upon success, remove book's id from localStorage
-            removeBookId(bookId);
+            //removeBookId(bookId);
         } catch (err) {
             console.error(err);
         }
