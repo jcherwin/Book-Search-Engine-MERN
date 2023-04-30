@@ -13,8 +13,8 @@ const LoginForm = () => {
     const [showAlert, setShowAlert] = useState(false);
     //Login Mutation
     const [login, { error, data }] = useMutation(LOGIN_USER);
-    console.log(error);
-    console.log(data);
+    // console.log(error);
+    // console.log(data);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -43,13 +43,16 @@ const LoginForm = () => {
             //   console.log(user);
             //   Auth.login(token);
 
+            /* GRAPHQL CODE */
             const { data } = await login({
-                variables: { userFormData },
+                variables: { ...userFormData },
             });
 
             console.log(data);
 
             Auth.login(data.login.token);
+
+            console.log(userFormData);
 
         } catch (err) {
             console.error(err);
