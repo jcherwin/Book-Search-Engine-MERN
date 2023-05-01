@@ -11,8 +11,6 @@ const resolvers = {
             return User.findOne({ username });
         },
         me: async (parent, args, context) => {
-            console.log(args);
-            console.log(context.user);
             if (context.user) {
                 return User.findOne({ _id: context.user._id });
             }
@@ -44,10 +42,7 @@ const resolvers = {
             return { token, user };
         },
         saveBook: async (parent, args, context) => {
-            // console.log(args.content);
-            // console.log(context.user);
             const { user } = context;
-            console.log(user._id);
 
             try {
                 const updatedUser = await User.findOneAndUpdate(
@@ -55,7 +50,6 @@ const resolvers = {
                     { $addToSet: { savedBooks: args.content } },
                     { new: true, runValidators: true }
                 );
-                console.log(updatedUser);
                 return { updatedUser };
             } catch (err) {
                 console.log(err);
@@ -63,8 +57,6 @@ const resolvers = {
             }
         },
         removeBook: async (parent, args, context) => {
-            // console.log(args);
-            // console.log(context.user);
             const { bookId } = args;
             const { user } = context;
 

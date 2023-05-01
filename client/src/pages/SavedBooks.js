@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+//import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import {
     Container,
@@ -8,19 +9,22 @@ import {
     Col
 } from 'react-bootstrap';
 
-import Auth from '../utils/auth';
+//import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 //import { getMe, deleteBook } from '../utils/API';
 import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
-    // const [userData, setUserData] = useState({});
+    //const [userData, setUserData] = useState({});
 
     // use this to determine if `useEffect()` hook needs to run again
     //const userDataLength = Object.keys(userData).length;
 
-    const { loading, data } = useQuery(GET_ME);
+    const { loading, data } = useQuery(GET_ME, {
+        fetchPolicy: 'network-only', // Used for first execution
+        nextFetchPolicy: 'cache-first', // Used for subsequent executions
+    });
 
     const [removeBook] = useMutation(REMOVE_BOOK, {
         refetchQueries: [
@@ -30,8 +34,9 @@ const SavedBooks = () => {
     });
 
     const userData = data?.me;
+    //console.log(userData);
 
-    /* REST CODE */
+    /* RESTful CODE */
     // useEffect(() => {
     //     const getUserData = async () => {
     //         try {
@@ -49,7 +54,7 @@ const SavedBooks = () => {
 
     //             const user = await response.json();
 
-                
+
     //             setUserData(user);
     //         } catch (err) {
     //             console.error(err);
@@ -60,29 +65,18 @@ const SavedBooks = () => {
     // }, [userDataLength]);
 
     // create function that accepts the book's mongo _id value as param and deletes the book from the database
-    const handleDeleteBook = async (bookId) => {
-        const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-        if (!token) {
-            return false;
-        }
-
+    const handleDeleteBook = (bookId) => {
         try {
-            /* REST CODE */
+            /* RESTful CODE */
             // const response = await deleteBook(bookId, token);
             // if (!response.ok) {
             //     throw new Error('something went wrong!');
             // }
             // const updatedUser = await response.json();
 
-            const { data } = await removeBook({
+            removeBook({
                 variables: { bookId: bookId },
-              });
-
-            // console.log("removeBook data");
-            // console.log(data);
-
-            //const updatedUser = data;
+            });
 
             //setUserData(updatedUser);
             // upon success, remove book's id from localStorage
