@@ -15,18 +15,21 @@ import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
-    //const [userData, setUserData] = useState({});
+    // const [userData, setUserData] = useState({});
 
     // use this to determine if `useEffect()` hook needs to run again
     //const userDataLength = Object.keys(userData).length;
 
     const { loading, data } = useQuery(GET_ME);
+
+    const [removeBook] = useMutation(REMOVE_BOOK, {
+        refetchQueries: [
+            { query: GET_ME },
+            'Me'
+        ],
+    });
+
     const userData = data?.me;
-
-    // console.log("userData var");
-    // console.log(userData);
-
-    //const [ removeBook ] = useMutation(REMOVE_BOOK);    
 
     /* REST CODE */
     // useEffect(() => {
@@ -45,6 +48,8 @@ const SavedBooks = () => {
     //             }
 
     //             const user = await response.json();
+
+                
     //             setUserData(user);
     //         } catch (err) {
     //             console.error(err);
@@ -70,7 +75,9 @@ const SavedBooks = () => {
             // }
             // const updatedUser = await response.json();
 
-            // const { data } = await removeBook(bookId);
+            const { data } = await removeBook({
+                variables: { bookId: bookId },
+              });
 
             // console.log("removeBook data");
             // console.log(data);

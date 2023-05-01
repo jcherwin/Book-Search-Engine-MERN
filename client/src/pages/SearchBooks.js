@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import {
     Container,
     Col,
@@ -22,7 +22,7 @@ const SearchBooks = () => {
     // create state to hold saved bookId values
     const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-    const [saveBook, { error, data }] = useMutation(SAVE_BOOK);
+    const [saveBook, saveBookRes] = useMutation(SAVE_BOOK);
 
     // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
     // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
@@ -82,9 +82,14 @@ const SearchBooks = () => {
             //     throw new Error('something went wrong!');
             // }
 
+            // console.log(bookToSave);
+
             const { data } = await saveBook({
-                variables: { ...bookToSave },
-              });
+                variables: { content: bookToSave },
+            });
+
+            // console.log("saveBook return");
+            // console.log(data);
 
             // if book successfully saves to user's account, save book id to state
             setSavedBookIds([...savedBookIds, bookToSave.bookId]);

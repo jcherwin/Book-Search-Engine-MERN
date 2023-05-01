@@ -44,20 +44,40 @@ const resolvers = {
             return { token, user };
         },
         saveBook: async (parent, args, context) => {
-            console.log(args);
-            console.log(context.user);
-            // try {
-            //     const updatedUser = await User.findOneAndUpdate(
-            //         { _id: user._id },
-            //         { $addToSet: { savedBooks: body } },
-            //         { new: true, runValidators: true }
-            //     );
-            //     return res.json(updatedUser);
-            // } catch (err) {
-            //     console.log(err);
-            //     return res.status(400).json(err);
-            // }
+            // console.log(args.content);
+            // console.log(context.user);
+            const { user } = context;
+            console.log(user._id);
+
+            try {
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: user._id },
+                    { $addToSet: { savedBooks: args.content } },
+                    { new: true, runValidators: true }
+                );
+                console.log(updatedUser);
+                return { updatedUser };
+            } catch (err) {
+                console.log(err);
+                return null;
+            }
         },
+        removeBook: async (parent, args, context) => {
+            // console.log(args);
+            // console.log(context.user);
+            const { bookId } = args;
+            const { user } = context;
+
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: user._id },
+                { $pull: { savedBooks: { bookId: bookId } } },
+                { new: true }
+            );
+            if (!updatedUser) {
+                return null;
+            }
+            return { updatedUser };
+        }
     },
 };
 
